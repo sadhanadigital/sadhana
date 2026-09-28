@@ -1168,23 +1168,61 @@
        <span class="contact-icon-wrapper"><i class="fa-solid fa-paper-plane"></i></span>
      </div>
      <div class="contact-form-wrapper">
-       <form id="contact-form" action="https://api.web3forms.com/submit" method="POST">
-         <input type="hidden" name="access_key" value="9a2d9338-0c39-4292-8587-34bc99a45f1c">
-         <div class="form-group">
-           <label for="name">Name</label>
-           <input id="name" name="name" type="text" autocomplete="name" required>
-         </div>
-         <div class="form-group">
-           <label for="email">Email</label>
-           <input id="email" name="email" type="email" autocomplete="email" required>
-         </div>
-         <div class="form-group">
-           <label for="message">Message</label>
-           <textarea id="message" name="message" rows="5" required></textarea>
-         </div>
-         <button class="btn btn-primary btn-submit" type="submit">Send Message <i class="fa-solid fa-arrow-right"></i></button>
-         <p id="form-status" role="status" aria-live="polite"></p>
-       </form>
+      <form id="contact-form"
+      action="https://api.web3forms.com/submit"
+      method="POST">
+
+    <input type="hidden"
+           name="access_key"
+           value="9a2d9338-0c39-4292-8587-34bc99a45f1c">
+
+    <input type="hidden"
+           name="subject"
+           value="New Contact Form Message - Sadhana Digital">
+
+    <input type="hidden"
+           name="from_name"
+           value="Sadhana Digital Portfolio">
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input
+            id="name"
+            name="name"
+            type="text"
+            autocomplete="name"
+            required>
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required>
+    </div>
+
+    <div class="form-group">
+        <label for="message">Message</label>
+        <textarea
+            id="message"
+            name="message"
+            rows="5"
+            required></textarea>
+    </div>
+
+    <button
+        class="btn btn-primary btn-submit"
+        type="submit">
+        Send Message
+        <i class="fa-solid fa-arrow-right"></i>
+    </button>
+
+    <p id="form-status" role="status" aria-live="polite"></p>
+
+</form>
      </div>
    </div>
  </section>
@@ -1261,59 +1299,61 @@
    });
 
    document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("contact-form");
-  const status = document.getElementById("form-status");
-  const submitButton = form.querySelector(".btn-submit");
+    const form = document.getElementById("contact-form");
+    const status = document.getElementById("form-status");
+    const submitButton = form.querySelector(".btn-submit");
 
-  form.addEventListener("submit", async function (e) {
-    e.preventDefault();
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-    // Show sending state
-    submitButton.disabled = true;
-    submitButton.innerHTML =
-      'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
+        submitButton.disabled = true;
+        submitButton.innerHTML =
+            'Sending... <i class="fa-solid fa-spinner fa-spin"></i>';
 
-    status.textContent = "";
-    status.className = "";
+        status.textContent = "";
+        status.className = "";
 
-    const formData = new FormData(form);
+        const formData = new FormData(form);
 
-    try {
-      const response = await fetch(form.action, {
-        method: "POST",
-        body: formData,
-        headers: {
-          Accept: "application/json"
+        try {
+            const response = await fetch(form.action, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    Accept: "application/json"
+                }
+            });
+
+            const result = await response.json();
+
+            console.log("Web3Forms:", result);
+
+            if (response.ok && result.success) {
+                status.textContent =
+                    "Thank you! Your message has been sent successfully.";
+
+                status.classList.add("success");
+                form.reset();
+            } else {
+                status.textContent =
+                    result.message || "Something went wrong.";
+
+                status.classList.add("error");
+            }
+
+        } catch (error) {
+            console.error(error);
+
+            status.textContent =
+                "Unable to send your message. Please try again.";
+
+            status.classList.add("error");
         }
-      });
 
-      const result = await response.json();
-
-      if (response.ok && result.success) {
-        status.textContent =
-          "Thank you! Your message has been sent successfully.";
-        status.classList.add("success");
-
-        // Clear form
-        form.reset();
-      } else {
-        status.textContent =
-          result.message || "Something went wrong. Please try again.";
-        status.classList.add("error");
-      }
-    } catch (error) {
-      console.error("Form submission error:", error);
-
-      status.textContent =
-        "Unable to send your message. Please try again later.";
-      status.classList.add("error");
-    }
-
-    // Restore button
-    submitButton.disabled = false;
-    submitButton.innerHTML =
-      'Send Message <i class="fa-solid fa-arrow-right"></i>';
-  });
+        submitButton.disabled = false;
+        submitButton.innerHTML =
+            'Send Message <i class="fa-solid fa-arrow-right"></i>';
+    });
 });
  </script>
 </body>
